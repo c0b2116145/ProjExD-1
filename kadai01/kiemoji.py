@@ -1,4 +1,5 @@
-import random,time
+import random
+from time import time
 
 all_moji_num = 26
 Q_num = 10
@@ -33,7 +34,7 @@ def syutudai():
 
 def main_qize():
     global user_ans_num
-    time_s = time.time()
+    time_s = time()
     for i in range(user_ans_num):
         T,K,H = syutudai()
         print(f"対象文字：{T}")
@@ -59,16 +60,16 @@ def main_qize():
 
             if check_ans:
                 print("正解！")
-                time_e = time.time()
+                time_e = time()
                 break
             else:
                 print("不正解です。またチャレンジしましょう")
                 print("------------------------------------")
-                time_e = time.time()
+                time_e = time()
         else:
             print("不正解です。またチャレンジしましょう")
             print("-------------------------------------")
-            time_e = time.time()
+            time_e = time()
 
     total_time = time_e-time_s
     print(f"所要時間は{round(total_time)}秒です。")
