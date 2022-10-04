@@ -3,7 +3,7 @@ import tkinter.messagebox as tkm
 
 def button_click(event):
     btn = event.widget
-    num = int(btn["text"])
+    num = btn["text"]
     entry.insert(tk.END,num)
 
 root = tk.Tk()
@@ -22,5 +22,8 @@ for i in range(4):
             button.grid(column=j,row=i+1)
             num -= 1
 
+button = tk.Button(root,text="+",height=2,width=4,font=("Times New Roman", 30))
+button.bind("<1>",button_click)
+button.grid(column=1,row=4)
 
 root.mainloop()
