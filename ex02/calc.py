@@ -12,9 +12,12 @@ def equal(event):
     entry.delete(0,tk.END)
     entry.insert(tk.END,ans)
 
+def c_click(event):
+    entry.delete(0,tk.END)
+
 root = tk.Tk()
 root.title("電卓")
-root.geometry("300x580")
+root.geometry("380x580")
 
 entry = tk.Entry(root, width=10,font=("Times New Roman",40),justify="right")
 entry.grid(column=0,row=0,columnspan=3)
@@ -36,5 +39,9 @@ button.grid(column=1,row=4)
 button = tk.Button(root,text="=",height=2,width=4,font=("Times New Roman", 30))
 button.bind("<1>",equal)
 button.grid(column=2,row=4)
+
+button = tk.Button(root,text="c",height=2,width=4,font=("Times New Roman", 30))
+button.bind("<1>",c_click)
+button.grid(column=4,row=1)
 
 root.mainloop()
