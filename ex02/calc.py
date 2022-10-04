@@ -9,6 +9,16 @@ def button_click(event):
 
 def equal(event):
     siki = entry.get()
+    root_list = []
+    for i in range(0,len(siki)):
+        if "√" in siki[i]:
+            root_list.append((i,sqrt(int(siki[i+1]))))
+    num = 0
+    if root_list != []:
+        for ind,val in root_list:
+            siki = siki.replace(f"{siki[ind-num:ind+2-num]}",str(val))
+            num += 1
+
     ans = eval(siki)
     entry.delete(0,tk.END)
     entry.insert(tk.END,ans)
@@ -52,6 +62,10 @@ button.grid(column=4,row=1)
 button = tk.Button(root,text="**2",height=1,width=4,font=("Times New Roman", 30))
 button.bind("<1>",button_click)
 button.grid(column=3,row=1)
+
+button = tk.Button(root,text="√",height=1,width=4,font=("Times New Roman", 30))
+button.bind("<1>",button_click)
+button.grid(column=2,row=1)
 
 button = tk.Button(root,text="=",height=1,width=4,font=("Times New Roman", 30),bg="gray")
 button.bind("<1>",equal)
