@@ -9,7 +9,8 @@ def button_click(event):
 def equal(event):
     siki = entry.get()
     ans = eval(siki)
-    entry.insert(tk.END,"="+str(ans))
+    entry.delete(0,tk.END)
+    entry.insert(tk.END,ans)
 
 root = tk.Tk()
 root.title("電卓")
