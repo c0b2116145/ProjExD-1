@@ -44,7 +44,6 @@ for i in range(4):
             num -= 1
 
 button_mark = {"+":(4,4),"-":(4,3),"*":(4,2),"/":(4,1),"**2":(3,1),"√":(2,1)}
-
 for key,val in button_mark.items():
     button = tk.Button(root,text=key,height=1,width=4,font=("Times New Roman", 30))
     button.bind("<1>",button_click)
