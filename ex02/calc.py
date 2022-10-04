@@ -53,10 +53,6 @@ button = tk.Button(root,text="**2",height=1,width=4,font=("Times New Roman", 30)
 button.bind("<1>",button_click)
 button.grid(column=3,row=1)
 
-button = tk.Button(root,text="√x",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=2,row=1)
-
 button = tk.Button(root,text="=",height=1,width=4,font=("Times New Roman", 30),bg="gray")
 button.bind("<1>",equal)
 button.grid(column=4,row=5)
