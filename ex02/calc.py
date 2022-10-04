@@ -43,29 +43,12 @@ for i in range(4):
             button.grid(column=j+1,row=i+2)
             num -= 1
 
-button = tk.Button(root,text="+",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=4,row=4)
+button_mark = {"+":(4,4),"-":(4,3),"*":(4,2),"/":(4,1),"**2":(3,1),"√":(2,1)}
 
-button = tk.Button(root,text="-",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=4,row=3)
-
-button = tk.Button(root,text="*",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=4,row=2)
-
-button = tk.Button(root,text="/",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=4,row=1)
-
-button = tk.Button(root,text="**2",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=3,row=1)
-
-button = tk.Button(root,text="√",height=1,width=4,font=("Times New Roman", 30))
-button.bind("<1>",button_click)
-button.grid(column=2,row=1)
+for key,val in button_mark.items():
+    button = tk.Button(root,text=key,height=1,width=4,font=("Times New Roman", 30))
+    button.bind("<1>",button_click)
+    button.grid(column=val[0],row=val[1])
 
 button = tk.Button(root,text="=",height=1,width=4,font=("Times New Roman", 30),bg="gray")
 button.bind("<1>",equal)
