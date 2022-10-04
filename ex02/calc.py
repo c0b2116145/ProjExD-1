@@ -6,7 +6,13 @@ def button_click(event):
     num = btn["text"]
     entry.insert(tk.END,num)
 
+def equal(event):
+    siki = entry.get()
+    ans = eval(siki)
+    entry.insert(tk.END,"="+str(ans))
+
 root = tk.Tk()
+root.title("電卓")
 root.geometry("300x580")
 
 entry = tk.Entry(root, width=10,font=("Times New Roman",40),justify="right")
@@ -25,5 +31,9 @@ for i in range(4):
 button = tk.Button(root,text="+",height=2,width=4,font=("Times New Roman", 30))
 button.bind("<1>",button_click)
 button.grid(column=1,row=4)
+
+button = tk.Button(root,text="=",height=2,width=4,font=("Times New Roman", 30))
+button.bind("<1>",equal)
+button.grid(column=2,row=4)
 
 root.mainloop()
