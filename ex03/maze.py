@@ -26,6 +26,7 @@ def main_proc():
     elif maze_list[my][mx] == 3:
         cx, cy = mx*100+50, my*100+50
         canv.coords("tori", cx, cy)
+        text.set("GOAL")
         return
 
     else:
@@ -44,7 +45,13 @@ def main_proc():
 
 if __name__ == "__main__":
     root = tk.Tk()
+
+    text = tk.StringVar()
+    text.set("Play")
+
     root.title("迷えるこうかとん")
+    label = tk.Label(root,textvariable=text,font=("",100))
+    label.pack()
 
     canv = tk.Canvas(root,width=1500,height=900,bg="black")
     canv.pack()
