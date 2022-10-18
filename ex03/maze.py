@@ -21,8 +21,13 @@ def main_proc():
     if key == "Right":
         mx += 1
 
-    if maze_list[my][mx] == 0:
+    if (maze_list[my][mx] == 0) or (maze_list[my][mx] == 2):
         cx, cy = mx*100+50, my*100+50
+    elif maze_list[my][mx] == 3:
+        cx, cy = mx*100+50, my*100+50
+        canv.coords("tori", cx, cy)
+        return
+
     else:
         if key == "Up":
             my += 1
@@ -53,9 +58,6 @@ if __name__ == "__main__":
     mx, my = 1,1
     cx,cy = mx*100+50, my*100+50
     canv.create_image(cx,cy,image=tori,tag="tori")
-
-    # canv.create_rectangle(100,100,100+100,100+100,fill="green")
-    # canv.create_rectangle(1300,700,1300+100,700+100,fill="red")
 
     key = ""
 
