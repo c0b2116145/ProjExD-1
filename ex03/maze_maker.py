@@ -23,7 +23,7 @@ def make_maze(yoko, tate):
             maze_lst[y+YP[rnd]][x+XP[rnd]] = 1
 
     maze_lst[1][1] = 2
-    maze_lst[7][13] = 3
+    maze_lst[-2][-2] = 3
 
     return maze_lst
 
