@@ -12,6 +12,7 @@ def key_up(event):
 def main_proc():
     global mx, my
     global cx, cy
+    global maze_list
     if key == "Up":
         my -= 1
     if key == "Down":
@@ -21,15 +22,7 @@ def main_proc():
     if key == "Right":
         mx += 1
 
-    if (maze_list[my][mx] == 0) or (maze_list[my][mx] == 2):
-        cx, cy = mx*100+50, my*100+50
-    elif maze_list[my][mx] == 3:
-        cx, cy = mx*100+50, my*100+50
-        canv.coords("tori", cx, cy)
-        text.set("GOAL")
-        return
-
-    else:
+    if maze_list[my][mx] == 1:
         if key == "Up":
             my += 1
         if key == "Down":
@@ -38,6 +31,25 @@ def main_proc():
             mx += 1
         if key == "Right":
             mx -= 1
+
+    elif maze_list[my][mx] == 3:
+        cx, cy = mx*100+50, my*100+50
+        canv.coords("tori", cx, cy)
+        text.set("GOAL")
+        return
+
+    else:
+        cx, cy = mx*100+50, my*100+50
+
+    if key == "r":
+        canv.delete("tori")
+        cx, cy = 150, 150
+        mx, my = 1,1
+        maze_list = mm.make_maze(15,9)
+        mm.show_maze(canv, maze_list)
+        canv.create_image(cx,cy,image=tori,tag="tori")
+
+        
 
     canv.coords("tori", cx, cy)
     root.after(100,main_proc)
