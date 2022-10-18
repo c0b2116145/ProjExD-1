@@ -54,8 +54,8 @@ if __name__ == "__main__":
     cx,cy = mx*100+50, my*100+50
     canv.create_image(cx,cy,image=tori,tag="tori")
 
-    canv.create_rectangle(100,100,100+100,100+100,fill="green")
-    canv.create_rectangle(1300,700,1300+100,700+100,fill="red")
+    # canv.create_rectangle(100,100,100+100,100+100,fill="green")
+    # canv.create_rectangle(1300,700,1300+100,700+100,fill="red")
 
     key = ""
 
