@@ -27,10 +27,11 @@ def main():
     clock = pg.time.Clock()
 
     # 練習３
+    x, y = 900, 400
     tori_sfc = pg.image.load("fig/6.png")
     tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 2.0)
     tori_rct = tori_sfc.get_rect()
-    tori_rct.center = 900, 400
+    tori_rct.center = x,y
 
     # 練習５
     bomb_sfc = pg.Surface((20,20))
@@ -48,26 +49,48 @@ def main():
 
         for event in pg.event.get():
             if event.type == pg.QUIT: return
-        # 練習４
-        key_states = pg.key.get_pressed()
-        if key_states[pg.K_UP]: tori_rct.centery -= 1
-        if key_states[pg.K_DOWN]: tori_rct.centery += 1
-        if key_states[pg.K_LEFT]: tori_rct.centerx -= 1
-        if key_states[pg.K_RIGHT]: tori_rct.centerx += 1
+        # # 練習４
+        # key_states = pg.key.get_pressed()
+        # if key_states[pg.K_UP]: tori_rct.centery -= 1
+        # if key_states[pg.K_DOWN]: tori_rct.centery += 1
+        # if key_states[pg.K_LEFT]: tori_rct.centerx -= 1
+        # if key_states[pg.K_RIGHT]: tori_rct.centerx += 1
 
+        # if yoko == -1:
+        #     if key_states[pg.K_LEFT]:
+        #         tori_rct.centerx += 1
+        #     if key_states[pg.K_RIGHT]:
+        #         tori_rct.centerx -= 1
+
+        # if tate == -1:
+        #     if key_states[pg.K_UP]:
+        #         tori_rct.centery += 1
+        #     if key_states[pg.K_DOWN]:
+        #         tori_rct.centery -= 1
+
+
+        # マウスの場所にこうかとんを移動させる
         yoko, tate = check_bound(tori_rct, scrn_rct)
-
         if yoko == -1:
-            if key_states[pg.K_LEFT]:
-                tori_rct.centerx += 1
-            if key_states[pg.K_RIGHT]:
-                tori_rct.centerx -= 1
+            if x < scrn_rct.width/2:
+                x += 1
+            if x > scrn_rct.width/2:
+                x -= 1
+        elif tate == -1:
+            if y < scrn_rct.height/2:
+                y += 1
+            if y > scrn_rct.height/2:
+                y -= 1
+        else:    
+            if event.type == pg.MOUSEMOTION:
+                x, y = event.pos # マウスの座標
+            
+        tori_rct.center = (x,y) # こうかとんの座標更新
 
-        if tate == -1:
-            if key_states[pg.K_UP]:
-                tori_rct.centery += 1
-            if key_states[pg.K_DOWN]:
-                tori_rct.centery -= 1
+        
+
+
+
 
         scrn_sfc.blit(tori_sfc, tori_rct)
 
