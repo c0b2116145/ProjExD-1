@@ -26,6 +26,9 @@ def main():
     bomb_rct.centerx = random.randint(0, scrn_rct.width)
     bomb_rct.centery = random.randint(0, scrn_rct.height)
 
+    # 練習６
+    vx, vy = +1, +1
+
     while True:
         scrn_sfc.blit(bg_sfc, bg_rct) # 練習２
 
@@ -40,6 +43,7 @@ def main():
 
         scrn_sfc.blit(tori_sfc, tori_rect)
 
+        bomb_rct.move_ip(vx, vy)
         scrn_sfc.blit(bomb_sfc, bomb_rct)
         
         pg.display.update()
