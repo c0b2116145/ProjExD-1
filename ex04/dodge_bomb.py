@@ -71,6 +71,13 @@ def main():
 
         scrn_sfc.blit(tori_sfc, tori_rct)
 
+        yoko, tate = check_bound(bomb_rct, scrn_rct)
+
+        if yoko == -1:
+            vx *= yoko
+        if tate == -1:
+            vy *= tate
+            
         bomb_rct.move_ip(vx, vy)
         scrn_sfc.blit(bomb_sfc, bomb_rct)
         
