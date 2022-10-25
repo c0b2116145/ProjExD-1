@@ -8,17 +8,24 @@ def main():
     bg_sfc = pg.image.load("fig/pg_bg.jpg")
     bg_rct = bg_sfc.get_rect()
 
+    clock = pg.time.Clock()
+
+    # 練習３
+    tori_sfc = pg.image.load("fig/6.png")
+    tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 2.0)
+    tori_rect = tori_sfc.get_rect()
+    tori_rect.center = 900, 400
+
     while True:
         scrn_sfc.blit(bg_sfc, bg_rct) # 練習２
-
-        pg.display.update()
-
-        clock = pg.time.Clock()
-        clock.tick(1000)
 
         for event in pg.event.get():
             if event.type == pg.QUIT: return
 
+        scrn_sfc.blit(tori_sfc,tori_rect)
+        
+        pg.display.update()
+        clock.tick(1000)
     
     
 
