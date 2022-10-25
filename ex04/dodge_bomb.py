@@ -22,6 +22,12 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: return
 
+        key_states = pg.key.get_pressed()
+        if key_states[pg.K_UP]: tori_rect.centery -= 1
+        if key_states[pg.K_DOWN]: tori_rect.centery += 1
+        if key_states[pg.K_LEFT]: tori_rect.centerx -= 1
+        if key_states[pg.K_RIGHT]: tori_rect.centerx += 1
+
         scrn_sfc.blit(tori_sfc,tori_rect)
         
         pg.display.update()
