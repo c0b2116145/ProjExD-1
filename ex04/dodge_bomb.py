@@ -63,7 +63,7 @@ def main():
     bomb_rct.centery = random.randint(0, scrn_rct.height)
 
     # 練習６
-    vx, vy = +1, +1
+    vx, vy = +5, +5
 
     bomb = [[bomb_sfc,bomb_rct]]
 
