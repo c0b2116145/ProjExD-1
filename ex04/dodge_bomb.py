@@ -17,12 +17,9 @@ def check_bound(obj_rct,scr_rct): # 画面外の判別
     return yoko, tate
 
 def check_bomb(rct,lst): # 爆弾増幅判定（ランダム）
-    check = False # check：Trueなら増幅、Falseならそのまま
     if random.randint(0,1000) == 0: # 1/1000の確率で爆弾が増える
-        check = True # checkをTrueにする
         now_x, now_y = rct.center
         create_bomb(now_x, now_y,lst)
-    return check
 
 def create_bomb(x,y,l): # 新しい爆弾の設定
     """
