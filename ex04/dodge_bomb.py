@@ -16,6 +16,27 @@ def check_bound(obj_rct,scr_rct):
 
     return yoko, tate
 
+def check_bomb():
+    check = False
+    if random.randint(0,1000) == 0:
+        check = True
+    return check
+
+def create_bomb(x,y,scrn,l):
+    new_bomb_sfc = pg.Surface((20,20))
+    new_bomb_sfc.set_colorkey((0, 0, 0))
+    pg.draw.circle(new_bomb_sfc, (255, 0, 0), (10, 10), 10)
+    new_bomb_rct = new_bomb_sfc.get_rect()
+    new_bomb_rct.centerx = x
+    new_bomb_rct.centery = y
+    l.append([new_bomb_sfc,new_bomb_rct])
+    
+
+
+    
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん") # 練習１
     scrn_sfc = pg.display.set_mode((1600,900))
@@ -43,6 +64,8 @@ def main():
 
     # 練習６
     vx, vy = +1, +1
+
+    bomb = [[bomb_sfc,bomb_rct]]
 
     while True:
         scrn_sfc.blit(bg_sfc, bg_rct) # 練習２
@@ -101,11 +124,19 @@ def main():
         if tate == -1:
             vy *= tate
 
-        bomb_rct.move_ip(vx, vy)
-        scrn_sfc.blit(bomb_sfc, bomb_rct)
+        bom = check_bomb()
+        if bom:
+            now_x, now_y = bomb_rct.center
+            create_bomb(now_x,now_y,scrn_sfc,bomb)
+        else:
 
-        if tori_rct.colliderect(bomb_rct):
-            return
+            bomb_rct.move_ip(vx, vy)
+            
+        for bombs in bomb:
+            scrn_sfc.blit(bombs[0], bombs[1])
+
+            if bombs[1].colliderect(tori_rct):
+                return
         
         pg.display.update()
         clock.tick(1000)
