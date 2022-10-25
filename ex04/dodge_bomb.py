@@ -16,10 +16,12 @@ def check_bound(obj_rct,scr_rct): # 画面外の判別
 
     return yoko, tate
 
-def check_bomb(): # 爆弾増幅判定（ランダム）
+def check_bomb(rct,lst): # 爆弾増幅判定（ランダム）
     check = False # check：Trueなら増幅、Falseならそのまま
     if random.randint(0,1000) == 0: # 1/1000の確率で爆弾が増える
         check = True # checkをTrueにする
+        now_x, now_y = rct.center
+        create_bomb(now_x, now_y,lst)
     return check
 
 def create_bomb(x,y,l): # 新しい爆弾の設定
@@ -123,13 +125,8 @@ def main():
         # こうかとんの描画
         scrn_sfc.blit(tori_sfc, tori_rct)
 
-        # 爆弾を増幅させるか判定
-        new_bom = check_bomb()
-        # 増幅できるなら
-        if new_bom:
-            now_x, now_y = bomb_rct.center # 現在の爆弾の場所
-            create_bomb(now_x,now_y,bombs) # 現在の爆弾の場所と爆弾のリスト
-            # 爆弾のリストに新しい爆弾が追加されている
+        # 爆弾を増幅させるかの処理
+        check_bomb(bomb_rct,bombs)
     
         for bomb in bombs: # すべての爆弾の動き
             yoko, tate = check_bound(bomb[1], scrn_rct) # 画面外判定
