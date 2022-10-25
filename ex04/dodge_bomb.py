@@ -22,14 +22,16 @@ def check_bomb():
         check = True
     return check
 
-def create_bomb(x,y,scrn,l):
+def create_bomb(x,y,l):
     new_bomb_sfc = pg.Surface((20,20))
     new_bomb_sfc.set_colorkey((0, 0, 0))
     pg.draw.circle(new_bomb_sfc, (255, 0, 0), (10, 10), 10)
     new_bomb_rct = new_bomb_sfc.get_rect()
     new_bomb_rct.centerx = x
     new_bomb_rct.centery = y
-    l.append([new_bomb_sfc,new_bomb_rct])
+    move_x = random.randint(-5,5)
+    move_y = random.randint(-5,5)
+    l.append([new_bomb_sfc,new_bomb_rct,move_x,move_y])
     
 
 
@@ -65,7 +67,7 @@ def main():
     # 練習６
     vx, vy = +5, +5
 
-    bomb = [[bomb_sfc,bomb_rct]]
+    bomb = [[bomb_sfc,bomb_rct,vx,vy]]
 
     while True:
         scrn_sfc.blit(bg_sfc, bg_rct) # 練習２
@@ -117,22 +119,21 @@ def main():
 
         scrn_sfc.blit(tori_sfc, tori_rct)
 
-        yoko, tate = check_bound(bomb_rct, scrn_rct)
-
-        if yoko == -1:
-            vx *= yoko
-        if tate == -1:
-            vy *= tate
-
         bom = check_bomb()
         if bom:
             now_x, now_y = bomb_rct.center
-            create_bomb(now_x,now_y,scrn_sfc,bomb)
-        else:
-
-            bomb_rct.move_ip(vx, vy)
+            create_bomb(now_x,now_y,bomb)
             
+        
         for bombs in bomb:
+            yoko, tate = check_bound(bombs[1], scrn_rct)
+
+            if yoko == -1:
+                bombs[2] *= yoko
+            if tate == -1:
+                bombs[3] *= tate
+
+            bombs[1].move_ip(bombs[2], bombs[3])
             scrn_sfc.blit(bombs[0], bombs[1])
 
             if bombs[1].colliderect(tori_rct):
