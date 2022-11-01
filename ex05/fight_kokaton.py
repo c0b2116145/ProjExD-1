@@ -47,13 +47,13 @@ class Bird:
 
 
 class Bomb:
-    def __init__(self, color, radius, vxy, scr:Screen):
+    def __init__(self, color, radius, vxy, scr:Screen, fx, fy):
         self.sfc = pg.Surface((radius*2, radius*2)) # 空のSurface
         self.sfc.set_colorkey((0, 0, 0)) # 四隅の黒い部分を透過させる
         pg.draw.circle(self.sfc, color, (radius,radius), radius) # 円を描く
         self.rct = self.sfc.get_rect()
-        self.rct.centerx = randint(0, scr.rct.width)
-        self.rct.centery = randint(0, scr.rct.height)
+        self.rct.centerx = fx
+        self.rct.centery = fy
         self.vx, self.vy = vxy
 
     def blit(self, scr:Screen):
@@ -103,7 +103,7 @@ def main():
 
     kkt = Bird("fig/6.png", 2.0, (900, 400))
 
-    bkd = Bomb((255,0,0), 10, (+1, +1), scr)
+    bkd = []
 
 
     ene = [Enemy("fig/1.png", 1.0, (0,randint(0,900)))]
@@ -117,7 +117,6 @@ def main():
                 return
 
         kkt.update(scr)
-        bkd.update(scr)
 
         if randint(0,1000) == 0:
             ene.append(Enemy("fig/1.png", 1.0, (0,randint(0,900))))
@@ -127,9 +126,14 @@ def main():
             enemy.update(scr)
             if kkt.rct.colliderect(enemy.rct):
                 return
-        # 練習8
-        if kkt.rct.colliderect(bkd.rct): # こうかとんrctが爆弾rctと重なったら
-            return
+
+            if randint(0,500) == 0:
+                bkd.append(Bomb((255,0,0), 10, (+1, +1), scr, enemy.rct.centerx, enemy.rct.centery))
+
+        for bomb in bkd:
+            bomb.update(scr)
+            if kkt.rct.colliderect(bomb.rct): # こうかとんrctが爆弾rctと重なったら
+                return
 
         pg.display.update() #練習2
         clock.tick(1000)
