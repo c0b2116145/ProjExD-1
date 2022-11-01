@@ -1,3 +1,4 @@
+from operator import index
 import pygame as pg
 import sys
 from random import randint
@@ -55,6 +56,7 @@ class Bomb:
         self.rct.centerx = fx
         self.rct.centery = fy
         self.vx, self.vy = vxy
+        self.bound = 0
 
     def blit(self, scr:Screen):
         scr.sfc.blit(self.sfc, self.rct)
@@ -64,7 +66,14 @@ class Bomb:
         yoko, tate = check_bound(self.rct, scr.rct)
         self.vx *= yoko
         self.vy *= tate
+        if yoko == -1 or tate == -1:
+            self.count_bound()
+
         self.blit(scr)
+
+    def count_bound(self):
+        self.bound += 1
+
         
 
 class Enemy:
@@ -128,9 +137,12 @@ def main():
                 return
 
             if randint(0,500) == 0:
-                bkd.append(Bomb((255,0,0), 10, (+1, +1), scr, enemy.rct.centerx, enemy.rct.centery))
+                bkd.append(Bomb((255,0,0), 10, (randint(-2,2),randint(-5,5)), scr, enemy.rct.centerx, enemy.rct.centery))
 
         for bomb in bkd:
+            if bomb.bound == 3:
+                bkd.remove(bomb)
+                break
             bomb.update(scr)
             if kkt.rct.colliderect(bomb.rct): # こうかとんrctが爆弾rctと重なったら
                 return
