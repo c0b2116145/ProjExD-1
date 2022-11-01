@@ -118,14 +118,15 @@ class Attack: # 攻撃クラス
         self.rct.centerx = fx
         self.rct.centery = fy
         # 移動の変数
-        self.vx, self.vy = vxy
+        self.vx, self.vy = vxy[0] * 0.001 , vxy[1] * 0.001
         self.move = 0 # 玉の移動距離
 
     def blit(self, scr:Screen):
         scr.sfc.blit(self.sfc, self.rct)
 
     def update(self,scr:Screen):
-        self.rct.move_ip(self.vx, self.vy) # 玉の移動
+        self.rct.centerx += self.vx
+        self.rct.centery += self.vy # 玉の移動
         # 壁判定
         yoko, tate = check_bound(self.rct, scr.rct)
         self.vx *= yoko
@@ -208,7 +209,7 @@ def main():
         key_states = pg.key.get_pressed()
         if key_states[pg.K_SPACE]: # スペースキーを押している間
             # 全方位に攻撃が出る
-            atk.append(Attack((0,255,0), 10, (randint(-3,3),randint(-3,3)), kkt.rct.centerx, kkt.rct.centery))
+            atk.append(Attack((0,255,0), 10, (randint(-3000,3000),randint(-3000,3000)), kkt.rct.centerx, kkt.rct.centery))
 
         pg.display.update()
         clock.tick(1000)
