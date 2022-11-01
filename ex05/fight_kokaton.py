@@ -187,7 +187,7 @@ def main():
 
             if randint(0,300) == 0: # ランダムに
                 # 爆弾を出す（敵の攻撃）
-                bkd.append(Bomb((255,0,0), 10, (randint(-3,3),randint(-3,3)), scr, enemy.rct.centerx, enemy.rct.centery))
+                bkd.append(Bomb((255,0,0), 10, (randint(-3,3),randint(-3,3)), enemy.rct.centerx, enemy.rct.centery))
 
             for attack in atk: # attackはAttackクラスインスタンス
                 if enemy.rct.colliderect(attack.rct):
@@ -208,7 +208,7 @@ def main():
         key_states = pg.key.get_pressed()
         if key_states[pg.K_SPACE]: # スペースキーを押している間
             # 全方位に攻撃が出る
-            atk.append(Attack((0,255,0), 10, (randint(-3,3),randint(-3,3)), scr, kkt.rct.centerx, kkt.rct.centery))
+            atk.append(Attack((0,255,0), 10, (randint(-3,3),randint(-3,3)), kkt.rct.centerx, kkt.rct.centery))
 
         pg.display.update()
         clock.tick(1000)
