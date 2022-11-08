@@ -152,6 +152,22 @@ class Item:
         self.rct.move_ip(-1,0) # 敵の移動
         self.blit(scr)
 
+class Heal:
+    def __init__(self, img, zoom, xy):
+        sfc = pg.image.load(img) 
+        sfc.set_colorkey((255,255,255))
+        self.sfc = pg.transform.rotozoom(sfc, 0, zoom) 
+        self.rct = self.sfc.get_rect() 
+        self.rct.center = xy
+
+    def blit(self, scr:Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self,scr:Screen):
+        self.rct.move_ip(-1,0) # 敵の移動
+        self.blit(scr)
+
+
 
 
 def check_bound(obj_rct, scr_rct):
@@ -186,6 +202,8 @@ def main():
 
     itm = []
 
+    hrt = []
+
     while True:
         scr.blit()
         for event in pg.event.get():
@@ -210,6 +228,9 @@ def main():
         
         if time%5000 == 0:
             itm.append(Item("fig/kusuri.jpg", 0.2,(1700,randint(0,900))))
+
+        if time%5000 == 0:
+            hrt.append(Heal("fig/heart.png", 0.2,(1700,randint(0,900))))
 
  
         if time%500 == 0:
@@ -254,6 +275,21 @@ def main():
                 smode = True
                 itm.remove(item)
                 break
+
+        for heart in hrt:
+            heart.update(scr) 
+            if heart.rct.centerx <= 0:
+                hrt.remove(heart)
+                break
+
+            if kkt.rct.colliderect(heart.rct):
+                ene.clear()
+                atk.clear()
+                bkd.clear( )
+                hrt.remove(heart)
+                break
+
+
 
         if smode:
             ult += 1
