@@ -1,6 +1,24 @@
 import pygame as pg
 import sys
+import os
 from random import randint
+
+class Music:    # BGM、効果音に関するクラス
+    def __init__(self, file):
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+        # musicフォルダの中にある音楽ファイルであるか確認する
+        file = os.path.join(main_dir, "music", file)    
+        self.sound = pg.mixer.Sound(file)       # 音楽ファイルをロードする
+    
+    def set_volume(self, vol):  # 音楽のボリュームを下げる
+        self.sound.set_volume(vol)  # 0.1～1.0の間でボリュームを変更可能
+
+    def play(self, count = 0):  # 音楽を再生させる
+        self.sound.play(count)  # countが繰り返しの回数
+
+    def fadeout(self, value=400):   # 音楽をフェードアウトさせる
+        self.sound.fadeout(value)   # 設定したミリ秒単位の中で再生中の音楽を徐々に小さくする
+
 
 class Screen: # スクリーンクラス
     def __init__(self, title, wh, bgimg):
@@ -239,6 +257,16 @@ def main():
     itm = []
     # ハートのインスタンス
     hrt = []
+
+    pon = Music("pon.wav")  # こうかとんが攻撃する時の効果音
+    pon.set_volume(0.5)
+
+    stage = Music("socks.mp3")  # BGM
+    stage.set_volume(0.05)
+    stage.play(10)
+
+    boss = Music("boss_battle2.wav")    # ボス用のBGM
+    boss.set_volume(0.2)
 
     while True:
         scr.blit() # スクリーンのブリット
