@@ -219,12 +219,18 @@ def check_bound(obj_rct, scr_rct):
         tate = -1
     return yoko, tate
 
+def sc_txt(ct):#スコアのSurface生成:
+    font1=pg.font .Font(None,80)
+    tmr=f"enemy : {ct}"#表示する文字列
+    txt=font1.render(str(tmr),True,(0,0,0))
+    return txt
 
 def main():
     smode = False # 攻撃無制限モードであるかの判定
     ult = 0 # 攻撃無制限モードの時間計測
     time = 0 # 時間計測
     clock = pg.time.Clock() # クロック
+    count=0 # 敵の撃破数
     # スクリーンのインスタンス
     scr = Screen("よけろ！こうかとん", (1600,900), "fig/pg_bg.jpg")
     # こうかとんのインスタンス
@@ -285,6 +291,7 @@ def main():
         for enemy in ene: # enemyはEnemyクラスインスタンス
             enemy.update(scr) # 敵の更新
             if kkt.rct.colliderect(enemy.rct):
+                count=1
                 # もしこうかとんが敵とぶつかったら終了
                 return
 
@@ -342,7 +349,9 @@ def main():
                 smode = False
                 ult = 0
 
-
+        #スコアの表示        
+        scr.sfc.blit(sc_txt(count),(1300,0))
+        
         clock.tick(1000)
         time += 1
         pg.display.update()
