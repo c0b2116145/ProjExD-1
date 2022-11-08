@@ -58,6 +58,7 @@ class Enemy: # 敵クラス
         vxy：敵のx,y移動の大きさのタプル
         """
         sfc = pg.image.load(img) # 敵画像の読み込み
+        sfc.set_colorkey((255,255,255))
         self.sfc = pg.transform.rotozoom(sfc, 0, zoom) # 敵画像の倍率変更
         self.rct = self.sfc.get_rect() # 敵のrect取得
         # 敵の初期位置
@@ -194,7 +195,7 @@ def main():
 
     kkt = Bird("fig/6.png", 1.0, (900, 400))
     
-    ene = [Enemy("fig/1.png", 1.0, (1700,randint(0,900)), (randint(-3, -1),randint(-2,2)))]
+    ene = [Enemy("fig/teki.jpeg", 0.2, (1700,randint(0,900)), (randint(-3, -1),randint(-2,2)))]
 
     atk = []
 
@@ -236,7 +237,7 @@ def main():
         if time%500 == 0:
             # 敵の追加
             for _ in range(5):
-                ene.append(Enemy("fig/1.png", 1.0, (1700,randint(0,900)),(randint(-3,-1),randint(-2,2))))
+                ene.append(Enemy("fig/teki.jpeg", 0.2, (1700,randint(0,900)),(randint(-3,-1),randint(-2,2))))
 
         for enemy in ene: # enemyはEnemyクラスインスタンス
             enemy.update(scr) # 敵の更新
