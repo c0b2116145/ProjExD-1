@@ -232,25 +232,23 @@ def check_bound(obj_rct, scr_rct):
 def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
     clock = pg.time.Clock() # クロック
     state = 0 # 0:ゲームを始める, 1:ゲームをやめる
-    title = pg.font.Font(None, 100)
-    choice = pg.font.Font(None, 70)
+    title = pg.font.Font(None, 100) # タイトル
+    choice = pg.font.Font(None, 70) # 選択肢
     title_render = title.render(gamen_name, True, gamen_col)
     while True:
-        scr.blit()
+        scr.blit() # 背景を描画
         for event in pg.event.get():
             # ✕が押されたら終了
             if event.type == pg.QUIT:
                 return
             # キーが押されたら
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_RIGHT:
-                    if state<len(sentakusi)-1:
-                        state += 1
-                if event.key == pg.K_LEFT:
-                    if state>0: 
-                        state -= 1
-                if event.key == pg.K_RETURN:
-                    return state
+                if event.key == pg.K_RIGHT and state<len(sentakusi)-1: # 左矢印を押した　かつ　stateが選択肢の数より小さければ
+                    state += 1 # 1つ右を選択
+                if event.key == pg.K_LEFT and state>0: # 右矢印を押した　かつ　stateが0より大きければ
+                    state -= 1 # 1つ左を選択
+                if event.key == pg.K_RETURN: # エンターを押したら
+                    return state # stateを返す
 
         for index, (sentaku, sentaku_col) in enumerate(sentakusi.items()):
             if state == index:
