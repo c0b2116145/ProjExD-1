@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 from random import randint, choice
+import math
 
 # 湯口追加
 class Screen: # スクリーンクラス
@@ -41,7 +42,7 @@ class Screen: # スクリーンクラス
 
 
 
-class Image:
+class Setting:
     def __init__(self, img, zoom, xy):
         """
         img:画像
@@ -57,7 +58,7 @@ class Image:
         scr.sfc.blit(self.sfc, self.rct)
 
 
-class Bird(Image): # こうかとんクラス
+class Bird(Setting): # こうかとんクラス
     # こうかとん移動
     key_delta = {
         pg.K_UP:    [0, -3],
@@ -86,7 +87,7 @@ class Bird(Image): # こうかとんクラス
         self.blit(scr)
 
 
-class Enemy(Image): # 敵クラス
+class Enemy(Setting): # 敵クラス
     def __init__(self, img, zoom, xy, vxy):
         """
         vxy:敵のx,y移動の大きさのタプル
@@ -102,7 +103,7 @@ class Enemy(Image): # 敵クラス
         self.blit(scr)
 
 
-class Attack(Image): # 攻撃クラス 
+class Attack(Setting): # 攻撃クラス 
     def __init__(self,img ,zoom, vxy, xy):
         """
         vxy:玉の移動のタプル
@@ -159,7 +160,7 @@ class  Bomb: # 敵の攻撃クラス
         self.bound += 1 # 跳ね返りのカウントを増やす
 
 
-class Item(Image): # 薬のクラス
+class Item(Setting): # 薬のクラス
     def __init__(self, img, zoom, xy):
         # 薬の設定
         super().__init__(img, zoom, xy)
@@ -169,7 +170,7 @@ class Item(Image): # 薬のクラス
         self.blit(scr)
 
 
-class Heal(Image): # ハートのクラス
+class Heal(Setting): # ハートのクラス
     def __init__(self, img, zoom, xy):
         # ハートの初期設定
         super().__init__(img, zoom, xy)
@@ -179,7 +180,7 @@ class Heal(Image): # ハートのクラス
         self.blit(scr)
 
 # 湯口の追加
-class LastEnemy(Image): #ラスボスのクラス
+class LastEnemy(Setting): #ラスボスのクラス
     def __init__(self, img, zoom, xy, hp, ):
         """
         hp:ラスボスの体力
@@ -216,6 +217,44 @@ class LastEnemy(Image): #ラスボスのクラス
                 self.tossin = False # 突進攻撃やめ
 
 
+class Life:#こうかとんのライフ
+  
+    def __init__(self,img,zoom,ly=1):
+        sfc = pg.image.load(img) # ハート画像の読み込み
+        self.sfc = pg.transform.rotozoom(sfc, 0, zoom) # ハート画像の倍率変更
+        self.rct = self.sfc.get_rect() # ハートのrect取得
+        self.y = ly
+
+    def blit(self,scr:Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self,brd:Bird,scr:Screen):
+        x,y = brd.rct.midtop#こうかとんのハートを置く位置を取得
+        self.rct.center = x-60+30*self.y,y-30
+        self.blit(scr)
+
+
+class END:
+    angle = 0
+    def __init__(self,img,xy, zoom):
+        self.sfc = pg.image.load(img)#画像読み込み
+        self.wid2,self.ht2 = xy #画像の中心
+        self.zoom = zoom
+        self.zoom_mv = 0.01
+
+    def update(self, scr:Screen):
+        self.zoom += self.zoom_mv
+        if 2.5 < self.zoom or self.zoom < 0.5:
+            self.zoom_mv *= -1
+
+        END.angle += 0.01
+        sfc = pg.transform.rotozoom(self.sfc, math.sin(END.angle)*360, self.zoom)
+        rect = sfc.get_rect()
+        rect.center = (self.wid2, self.ht2)
+        scr.sfc.blit(sfc,rect)
+        
+
+
 def check_bound(obj_rct, scr_rct):
     """
     obj_rct：こうかとんrct，または，爆弾rct
@@ -243,12 +282,14 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
     title = pg.font.Font(None, 100) # タイトル
     choice = pg.font.Font(None, 70) # 選択肢
     title_render = title.render(gamen_name, True, gamen_col)
+    knl = END("fig/last_enemy.png",(scr.rct.width//2,scr.rct.height//2),1.0)
     while True:
         scr.blit() # 背景を描画
+        knl.update(scr)
         for event in pg.event.get():
             # ✕が押されたら終了
             if event.type == pg.QUIT:
-                return
+                return 1
             # キーが押されたら
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RIGHT and state<len(sentakusi)-1: # 左矢印を押した　かつ　stateが選択肢の数より小さければ
@@ -260,9 +301,9 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
 
         for index, (sentaku, sentaku_col) in enumerate(sentakusi.items()):
             if state == index:
-                choice_render = choice.render(sentaku, True, (0, 0, 0), sentaku_col)
+                choice_render = choice.render(sentaku, True, (255,255,255), sentaku_col)
             else:
-                choice_render = choice.render(sentaku, True, (255, 255, 255))
+                choice_render = choice.render(sentaku, True, (0,0,0))
 
             width = choice_render.get_width()
             height = choice_render.get_height()
@@ -272,7 +313,7 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
             pos_x = haba*(index+1) - (width/2)
             pos_y = scr.rct.centery-(height/2)
             scr.sfc.blit(choice_render, (pos_x, pos_y))
-            
+        
         scr.sfc.blit(title_render, (scr.rct.centerx-(title_render.get_width())/2, scr.rct.height/3))
 
         clock.tick(1000)
@@ -283,12 +324,11 @@ def main():
     smode = False # 攻撃無制限モードであるかの判定
     lene_flg = False # ラスボスを描画指せるかのフラグ(湯口)
     lene_aname_lit = ["big_bomb", "frea", "tossin", "tossin", "nasi"] # ラスボスの攻撃手段
-    clock = pg.time.Clock() # クロック
     count=0 # 敵の撃破数
     # スクリーンのインスタンス
     scr = Screen("よけろ！こうかとん", (1600,900), "fig/pg_bg.jpg")
     # こうかとんのインスタンス
-    kkt = Bird("fig/6.png", 1.0, (900, 400))
+    kkt = Bird("fig/2.png", 1.0, (900, 400))
     # ラスボスのインスタンス
     lene = LastEnemy("fig/last_enemy.png", 1.5, (1600, 450), 500)
     # 敵のインスタンス
@@ -301,15 +341,19 @@ def main():
     itm = []
     # ハートのインスタンス
     hrt = []
+    # ライフ(鈴木)
+    lif = [Life("fig/heart.png",0.1),Life("fig/heart.png",0.1,2),Life("fig/heart.png",0.1,3)]
+
+    start = gamen(scr, "SHOOTING KOUKATON", (0, 0, 255), {"start":(0, 125, 125), "quit":(125, 125, 0), "about":(0, 0, 255)})
+    if start == 1:
+        return
+
+    clock = pg.time.Clock() # クロック
     # 一定時間でイベントを発生させる(湯口)
     pg.time.set_timer(31, 60000, 1) # ラスボスが出てくる時間になったら1回だけイベント31番を発生させる
     pg.time.set_timer(29, 5000) #敵を登場させる
     pg.time.set_timer(28, 40000) # アイテムを登場させる
     pg.time.set_timer(27, 40000) #  ハートを登場させる
-
-    start = gamen(scr, "SHOOTING KOUKATON", (0, 0, 255), {"start":(0, 125, 125), "quit":(125, 125, 0), "about":(0, 0, 255)})
-    if start == 1:
-        return
 
     while True:
         scr.blit() # スクリーンのブリット
@@ -343,6 +387,7 @@ def main():
                     lene.zensin(True)
                 elif kougeki == "nasi":
                     continue
+
             if event.type == 29:
                 ene.extend([Enemy("fig/teki.png", 0.2, (1700,randint(0,900)),(randint(-3,-1),randint(-2,2))) for _ in range(5)])
             if event.type == 28:
@@ -355,13 +400,24 @@ def main():
 
         if lene_flg: # ラスボスを描画するかどうか
             if kkt.rct.colliderect(lene.rct):
-                end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
-                if end == 0:
-                    main()
-                return
+                lif.pop()
+                if lif ==[]:
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    if end == 0:
+                        main()
+                    return
+
+                else:
+                    ene.clear()
+                    bkd.clear()
+                    kkt.rct.center = scr.rct.width//5,scr.rct.height//2
+
             lene.update(scr)
 
         kkt.update(scr)
+
+        for heart in lif:
+            heart.update(kkt,scr)
 
         for attack in atk: # attackはAttackクラスインスタンス
             attack.update(scr)
@@ -389,11 +445,15 @@ def main():
         for enemy in ene: # enemyはEnemyクラスインスタンス
             enemy.update(scr) # 敵の更新
             if kkt.rct.colliderect(enemy.rct):
-                # もしこうかとんが敵とぶつかったら終了
-                end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
-                if end == 0:
-                    main()
-                return
+                # こうかとんが敵とぶつかった時の処理
+                ene = []
+                bkd =[]
+                lif.pop()
+                if lif ==[]:
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    if end == 0:
+                        main()
+                    return
 
             if randint(0,1000) == 0: # ランダムに
                 # 爆弾を出す（敵の攻撃）
@@ -414,10 +474,14 @@ def main():
             bomb.update(scr) # 爆弾の更新
 
             if kkt.rct.colliderect(bomb.rct):
-                end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
-                if end == 0:
-                    main()
-                return
+                ene = []
+                bkd =[]
+                lif.pop()
+                if lif ==[]:
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    if end == 0:
+                        main()
+                    return
 
             if bomb.bound == 3: # もし3回跳ね返ったら
                 # 爆弾が消える
@@ -442,10 +506,12 @@ def main():
 
             # ハートを取ったら全部消える
             if kkt.rct.colliderect(heart.rct):
-                ene.clear()
-                atk.clear()
-                bkd.clear( )
                 hrt.remove(heart)
+                if len(lif) == 3:
+                    break
+                elif len(lif) <= 3:
+                    lif.append(Life("fig/heart.png",0.1,len(lif)+1))
+                break
 
         #スコアの表示        
         scr.sfc.blit(sc_txt(count),(1300,0))
