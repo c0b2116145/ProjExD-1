@@ -229,6 +229,14 @@ def check_bound(obj_rct, scr_rct):
         tate = -1
     return yoko, tate
 
+
+def sc_txt(ct):#スコアのSurface生成:
+    font1=pg.font .Font(None,80)
+    tmr=f"enemy : {ct}"#表示する文字列
+    txt=font1.render(str(tmr),True,(0,0,0))
+    return txt
+
+
 def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
     clock = pg.time.Clock() # クロック
     state = 0 # 0:ゲームを始める, 1:ゲームをやめる
@@ -269,14 +277,14 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
 
         clock.tick(1000)
         pg.display.update()
-
-
+        
 
 def main():
     smode = False # 攻撃無制限モードであるかの判定
     lene_flg = False # ラスボスを描画指せるかのフラグ(湯口)
     lene_aname_lit = ["big_bomb", "frea", "tossin", "tossin", "nasi"] # ラスボスの攻撃手段
     clock = pg.time.Clock() # クロック
+    count=0 # 敵の撃破数
     # スクリーンのインスタンス
     scr = Screen("よけろ！こうかとん", (1600,900), "fig/pg_bg.jpg")
     # こうかとんのインスタンス
@@ -397,6 +405,7 @@ def main():
 
             for attack in atk: # attackはAttackクラスインスタンス
                 if enemy.rct.colliderect(attack.rct):
+                    count += 1
                     ene.remove(enemy)
                     atk.remove(attack)
                     break
@@ -437,6 +446,9 @@ def main():
                 atk.clear()
                 bkd.clear( )
                 hrt.remove(heart)
+
+        #スコアの表示        
+        scr.sfc.blit(sc_txt(count),(1300,0))
 
         clock.tick(1000)
         pg.display.update()
