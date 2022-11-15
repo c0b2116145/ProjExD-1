@@ -23,6 +23,7 @@ class Screen: # スクリーンクラス
         self.bg_x = 0
         self.bgf_x =1600
         self.scroll_speed = 1
+        self.scroll_count = 1
 
     def blit(self):
         # 背景スクロールするように貼り付け
