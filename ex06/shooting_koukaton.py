@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from random import randint, choice
 import math
+import os
 
 # 湯口追加
 class Screen: # スクリーンクラス
@@ -23,7 +24,7 @@ class Screen: # スクリーンクラス
         # 背景スクロール用
         self.bg_x = 0
         self.bgf_x =1600
-        self.scroll_speed = 1
+        self.scroll_speed = 5 
 
     def blit(self):
         # 背景スクロールするように貼り付け
@@ -254,6 +255,19 @@ class END:
         scr.sfc.blit(sfc,rect)
         
 
+class Music:    # BGM、効果音に関するクラス
+    def __init__(self, file):  
+        self.sound = pg.mixer.Sound(file)       # 音楽ファイルをロードする
+
+    def set_volume(self, vol):  # 音楽のボリュームを下げる
+        self.sound.set_volume(vol)  # 0.1～1.0の間でボリュームを変更可能
+
+    def play(self, count = 0):  # 音楽を再生させる
+        self.sound.play(count)  # countが繰り返しの回数
+
+    def fadeout(self, value=400):   # 音楽をフェードアウトさせる
+        self.sound.fadeout(value)   # 設定したミリ秒単位の中で再生中の音楽を徐々に小さくする
+
 
 def check_bound(obj_rct, scr_rct):
     """
@@ -271,12 +285,12 @@ def check_bound(obj_rct, scr_rct):
 
 def sc_txt(ct):#スコアのSurface生成:
     font1=pg.font .Font(None,80)
-    tmr=f"enemy : {ct}"#表示する文字列
+    tmr=f"Score : {ct}"#表示する文字列
     txt=font1.render(str(tmr),True,(0,0,0))
     return txt
 
 
-def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
+def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict, count=0):
     clock = pg.time.Clock() # クロック
     state = 0 # 0:ゲームを始める, 1:ゲームをやめる
     title = pg.font.Font(None, 100) # タイトル
@@ -316,6 +330,7 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict):
         
         scr.sfc.blit(title_render, (scr.rct.centerx-(title_render.get_width())/2, scr.rct.height/3))
 
+        scr.sfc.blit(sc_txt(count),(1300,0))
         clock.tick(1000)
         pg.display.update()
         
@@ -344,7 +359,7 @@ def main():
     # ライフ(鈴木)
     lif = [Life("fig/heart.png",0.1),Life("fig/heart.png",0.1,2),Life("fig/heart.png",0.1,3)]
 
-    start = gamen(scr, "SHOOTING KOUKATON", (0, 0, 255), {"start":(0, 125, 125), "quit":(125, 125, 0), "about":(0, 0, 255)})
+    start = gamen(scr, "SHOOTING KOUKATON", (0, 0, 255), {"start":(0, 125, 125), "quit":(125, 125, 0)})
     if start == 1:
         return
 
@@ -352,8 +367,18 @@ def main():
     # 一定時間でイベントを発生させる(湯口)
     pg.time.set_timer(31, 60000, 1) # ラスボスが出てくる時間になったら1回だけイベント31番を発生させる
     pg.time.set_timer(29, 5000) #敵を登場させる
-    pg.time.set_timer(28, 40000) # アイテムを登場させる
-    pg.time.set_timer(27, 40000) #  ハートを登場させる
+    pg.time.set_timer(28, randint(8000,40000)) # アイテムを登場させる
+    pg.time.set_timer(27, randint(8000,40000)) #  ハートを登場させる
+
+    pon = Music("music/pon.wav")  # こうかとんが攻撃する時の効果音
+    pon.set_volume(0.1)
+
+    stage = Music("music/socks.mp3")  # BGM
+    stage.set_volume(0.05)
+    stage.play(10)
+
+    boss = Music("music/boss_battle.mp3")    # ボス用のBGM
+    boss.set_volume(0.05)
 
     while True:
         scr.blit() # スクリーンのブリット
@@ -369,13 +394,17 @@ def main():
                     if smode == 1:
                         # 攻撃リストに3方向追加(この様に書いた方がネストが少なくて良いのではと思った。あと実行時間的にこっちの方が速そう。大した差じゃないけど)
                         atk.extend([Attack("fig/egg_toumei.png" ,0.2,(3,i), kkt.rct.center)for i in range(-1, 2)]) 
+                        pon.play()
                     # 画面上に6こ卵がなければ
-                    elif len(atk) <  6:
+                    elif len(atk) <  4:
                         # 攻撃リストに3方向追加
                         atk.extend([Attack("fig/egg_toumei.png" ,0.2,(3,i), kkt.rct.center)for i in range(-1, 2)])
+                        pon.play()
             # 31イベントであったら
             if event.type == 31:
                 lene_flg = True # ラスボスを描画スタート
+                stage.fadeout()
+                boss.play()
                 pg.time.set_timer(30, 10000) # ラスボスの攻撃を呼び出す。
             if event.type == 30:
                 kougeki = choice(lene_aname_lit)
@@ -392,8 +421,10 @@ def main():
                 ene.extend([Enemy("fig/teki.png", 0.2, (1700,randint(0,900)),(randint(-3,-1),randint(-2,2))) for _ in range(5)])
             if event.type == 28:
                 itm.append(Item("fig/kusuri.png", 0.2,(1700,randint(0,900))))
+                pg.time.set_timer(28, randint(8000,40000))
             if event.type == 27:
                 hrt.append(Heal("fig/heart.png", 0.2,(1700,randint(0,900))))
+                pg.time.set_timer(27, randint(8000,40000))
 
             if event.type == 26:
                 smode = False
@@ -402,7 +433,9 @@ def main():
             if kkt.rct.colliderect(lene.rct):
                 lif.pop()
                 if lif ==[]:
-                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    stage.fadeout()
+                    boss.fadeout()
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)}, count)
                     if end == 0:
                         main()
                     return
@@ -433,7 +466,8 @@ def main():
                     # ラスボスが赤くなる　
                     lene = LastEnemy("fig/last_enemy_r.png", 2, (lene_rct_x, lene_rct_y), lene_hp)
                 if lene.hp <= 0: # 体力が0以下になったら終了
-                    comp = gamen(scr, "MISSION COMPLETE", (0, 0, 255), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    count += 100
+                    comp = gamen(scr, "MISSION COMPLETE", (0, 0, 255), {"restart":(0, 125, 125), "quit":(125, 125, 0)},count)
                     if comp == 0:
                         main()
                     return
@@ -450,7 +484,9 @@ def main():
                 bkd =[]
                 lif.pop()
                 if lif ==[]:
-                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    stage.fadeout()
+                    boss.fadeout()
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)},count)
                     if end == 0:
                         main()
                     return
@@ -478,7 +514,9 @@ def main():
                 bkd =[]
                 lif.pop()
                 if lif ==[]:
-                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)})
+                    stage.fadeout()
+                    boss.fadeout()
+                    end = gamen(scr, "GAME OVER", (255, 0, 0), {"restart":(0, 125, 125), "quit":(125, 125, 0)},count)
                     if end == 0:
                         main()
                     return
@@ -507,11 +545,9 @@ def main():
             # ハートを取ったら全部消える
             if kkt.rct.colliderect(heart.rct):
                 hrt.remove(heart)
-                if len(lif) == 3:
-                    break
-                elif len(lif) <= 3:
+                if len(lif) < 3:
                     lif.append(Life("fig/heart.png",0.1,len(lif)+1))
-                break
+                continue
 
         #スコアの表示        
         scr.sfc.blit(sc_txt(count),(1300,0))
