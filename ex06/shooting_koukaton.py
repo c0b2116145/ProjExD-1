@@ -182,6 +182,7 @@ class Item: # 薬のクラス
         self.rct.move_ip(-1,0) # 薬の移動
         self.blit(scr)
 
+
 class Heal: # ハードのクラス
     def __init__(self, img, zoom, xy):
         """
@@ -202,8 +203,6 @@ class Heal: # ハードのクラス
     def update(self,scr:Screen):
         self.rct.move_ip(-1,0) # ハートの移動
         self.blit(scr)
-
-
 
 
 def check_bound(obj_rct, scr_rct):
@@ -228,7 +227,7 @@ def main():
     # スクリーンのインスタンス
     scr = Screen("よけろ！こうかとん", (1600,900), "fig/pg_bg.jpg")
     # こうかとんのインスタンス
-    kkt = Bird("fig/6.png", 1.0, (900, 400))
+    kkt = Bird("fig/2.png", 1.0, (900, 400))
     # 敵のインスタンス
     ene = [Enemy("fig/teki.jpeg", 0.2, (1700,randint(0,900)), (randint(-3, -1),randint(-2,2)))]
     # 攻撃のインスタンス
@@ -328,8 +327,7 @@ def main():
             # ハートを取ったら全部消える
             if kkt.rct.colliderect(heart.rct):
                 ene.clear()
-                atk.clear()
-                bkd.clear( )
+                bkd.clear()
                 hrt.remove(heart)
                 break
 
@@ -352,4 +350,4 @@ if __name__ == "__main__":
     pg.init() # 初期化
     main() # ゲームの本体
     pg.quit() # 初期化の解除
-    sys.exit()
+    sys.exit() 

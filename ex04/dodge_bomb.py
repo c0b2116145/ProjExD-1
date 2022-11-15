@@ -122,10 +122,10 @@ def main():
         # こうかとんの描画
         scrn_sfc.blit(tori_sfc, tori_rct)
 
-        # 爆弾を増幅させるかの処理
-        check_bomb(bomb_rct,bombs)
     
         for bomb in bombs: # すべての爆弾の動き
+            # 爆弾を増幅させるかの処理
+            check_bomb(bomb[1],bombs)
             yoko, tate = check_bound(bomb[1], scrn_rct) # 画面外判定
 
             # 画面外なら動きの符号を反転させる（反射する）

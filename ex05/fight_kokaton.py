@@ -46,7 +46,7 @@ class Bird:
         self.blit(scr)
 
 
-class Bomb:
+class  Bomb:
     def __init__(self, color, radius, vxy, fx, fy):
         self.sfc = pg.Surface((radius*2, radius*2)) # 空のSurface
         self.sfc.set_colorkey((0, 0, 0)) # 四隅の黒い部分を透過させる
@@ -101,7 +101,7 @@ class Enemy: # 敵クラス
         self.blit(scr)
 
 
-class Attack: # 攻撃クラス
+class Attack: # 攻撃クラス 
     def __init__(self, color, radius, vxy, fx, fy):
         """
         color：玉の色
