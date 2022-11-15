@@ -2,9 +2,8 @@ import pygame as pg
 import sys
 from random import randint, choice
 import math
-import os
 
-# 湯口追加
+# 天野、湯口
 class Screen: # スクリーンクラス
     def __init__(self, title, wh, bgimg):
         """
@@ -27,11 +26,6 @@ class Screen: # スクリーンクラス
         self.scroll_speed = 5 
 
     def blit(self):
-        # 背景スクロールするように貼り付け
-        # self.bg_x = (self.bg_x-1)%1600
-        # print(self.bg_x)
-        # self.sfc.blit(self.bg_sfc,[self.bg_x-1600,0])
-        # self.sfc.blit(self.bg_flip_sfc,[self.bg_x,0])
         self.sfc.blit(self.bg_sfc,[self.bg_x,0])
         self.sfc.blit(self.bg_flip_sfc,[self.bgf_x,0])
         self.bg_x -= self.scroll_speed
@@ -41,8 +35,7 @@ class Screen: # スクリーンクラス
         if abs(self.bgf_x) > 1600:
             self.bgf_x = 1600
 
-
-
+# 湯口
 class Setting:
     def __init__(self, img, zoom, xy):
         """
@@ -58,7 +51,7 @@ class Setting:
     def blit(self, scr:Screen):
         scr.sfc.blit(self.sfc, self.rct)
 
-
+# 全員
 class Bird(Setting): # こうかとんクラス
     # こうかとん移動
     key_delta = {
@@ -87,7 +80,7 @@ class Bird(Setting): # こうかとんクラス
 
         self.blit(scr)
 
-
+# 天野
 class Enemy(Setting): # 敵クラス
     def __init__(self, img, zoom, xy, vxy):
         """
@@ -103,7 +96,7 @@ class Enemy(Setting): # 敵クラス
         self.vy *= tate
         self.blit(scr)
 
-
+# 天野
 class Attack(Setting): # 攻撃クラス 
     def __init__(self,img ,zoom, vxy, xy):
         """
@@ -123,7 +116,7 @@ class Attack(Setting): # 攻撃クラス
         self.vy *= tate
         self.blit(scr)
 
-
+# 天野
 class  Bomb: # 敵の攻撃クラス
     def __init__(self, color, radius, vxy, xy):
         """
@@ -160,7 +153,7 @@ class  Bomb: # 敵の攻撃クラス
     def count_bound(self): # 跳ね返りカウント関数
         self.bound += 1 # 跳ね返りのカウントを増やす
 
-
+# 天野
 class Item(Setting): # 薬のクラス
     def __init__(self, img, zoom, xy):
         # 薬の設定
@@ -170,7 +163,7 @@ class Item(Setting): # 薬のクラス
         self.rct.move_ip(-1,0) # 薬の移動
         self.blit(scr)
 
-
+# 天野、鈴木
 class Heal(Setting): # ハートのクラス
     def __init__(self, img, zoom, xy):
         # ハートの初期設定
@@ -180,7 +173,7 @@ class Heal(Setting): # ハートのクラス
         self.rct.move_ip(-1,0) # ハートの移動
         self.blit(scr)
 
-# 湯口の追加
+# 湯口
 class LastEnemy(Setting): #ラスボスのクラス
     def __init__(self, img, zoom, xy, hp, ):
         """
@@ -217,7 +210,7 @@ class LastEnemy(Setting): #ラスボスのクラス
                 self.turn = True # 前突進するようにする
                 self.tossin = False # 突進攻撃やめ
 
-
+# 鈴木
 class Life:#こうかとんのライフ
   
     def __init__(self,img,zoom,ly=1):
@@ -234,7 +227,7 @@ class Life:#こうかとんのライフ
         self.rct.center = x-60+30*self.y,y-30
         self.blit(scr)
 
-
+# 鈴木
 class END:
     angle = 0
     def __init__(self,img,xy, zoom):
@@ -254,13 +247,13 @@ class END:
         rect.center = (self.wid2, self.ht2)
         scr.sfc.blit(sfc,rect)
         
-
+# 長田
 class Music:    # BGM、効果音に関するクラス
     def __init__(self, file):  
         self.sound = pg.mixer.Sound(file)       # 音楽ファイルをロードする
 
     def set_volume(self, vol):  # 音楽のボリュームを下げる
-        self.sound.set_volume(vol)  # 0.1～1.0の間でボリュームを変更可能
+        self.sound.set_volume(vol)  # 1.0以下の値でボリュームを変更可能
 
     def play(self, count = 0):  # 音楽を再生させる
         self.sound.play(count)  # countが繰り返しの回数
@@ -268,7 +261,7 @@ class Music:    # BGM、効果音に関するクラス
     def fadeout(self, value=400):   # 音楽をフェードアウトさせる
         self.sound.fadeout(value)   # 設定したミリ秒単位の中で再生中の音楽を徐々に小さくする
 
-
+# 全員
 def check_bound(obj_rct, scr_rct):
     """
     obj_rct：こうかとんrct，または，爆弾rct
@@ -282,14 +275,14 @@ def check_bound(obj_rct, scr_rct):
         tate = -1
     return yoko, tate
 
-
+# 大橋
 def sc_txt(ct):#スコアのSurface生成:
     font1=pg.font .Font(None,80)
     tmr=f"Score : {ct}"#表示する文字列
     txt=font1.render(str(tmr),True,(0,0,0))
     return txt
 
-
+# 湯口
 def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict, count=0):
     clock = pg.time.Clock() # クロック
     state = 0 # 0:ゲームを始める, 1:ゲームをやめる
@@ -336,10 +329,11 @@ def gamen(scr, gamen_name:str, gamen_col:tuple, sentakusi:dict, count=0):
         
 
 def main():
-    smode = False # 攻撃無制限モードであるかの判定
+    smode = False # 攻撃無制限モードであるかの判定(天野、湯口)
     lene_flg = False # ラスボスを描画指せるかのフラグ(湯口)
-    lene_aname_lit = ["big_bomb", "frea", "tossin", "tossin", "nasi"] # ラスボスの攻撃手段
-    count=0 # 敵の撃破数
+    lene_aname_lit = ["big_bomb", "frea", "tossin", "tossin", "nasi"] # ラスボスの攻撃手段(湯口)
+    count=0 # 敵の撃破数(大橋)
+    #天野-----------
     # スクリーンのインスタンス
     scr = Screen("よけろ！こうかとん", (1600,900), "fig/pg_bg.jpg")
     # こうかとんのインスタンス
@@ -356,13 +350,14 @@ def main():
     itm = []
     # ハートのインスタンス
     hrt = []
+    #------------------
     # ライフ(鈴木)
     lif = [Life("fig/heart.png",0.1),Life("fig/heart.png",0.1,2),Life("fig/heart.png",0.1,3)]
-
+    #湯口
     start = gamen(scr, "SHOOTING KOUKATON", (0, 0, 255), {"start":(0, 125, 125), "quit":(125, 125, 0)})
     if start == 1:
         return
-
+    
     clock = pg.time.Clock() # クロック
     # 一定時間でイベントを発生させる(湯口)
     pg.time.set_timer(31, 60000, 1) # ラスボスが出てくる時間になったら1回だけイベント31番を発生させる
@@ -370,6 +365,7 @@ def main():
     pg.time.set_timer(28, randint(8000,40000)) # アイテムを登場させる
     pg.time.set_timer(27, randint(8000,40000)) #  ハートを登場させる
 
+    #長田------
     pon = Music("music/pon.wav")  # こうかとんが攻撃する時の効果音
     pon.set_volume(0.1)
 
@@ -379,8 +375,10 @@ def main():
 
     boss = Music("music/boss_battle.mp3")    # ボス用のBGM
     boss.set_volume(0.05)
+    #-----------
 
     while True:
+        #天野、湯口--------------------------
         scr.blit() # スクリーンのブリット
         for event in pg.event.get():
             # ✕が押されたら終了
@@ -400,6 +398,9 @@ def main():
                         # 攻撃リストに3方向追加
                         atk.extend([Attack("fig/egg_toumei.png" ,0.2,(3,i), kkt.rct.center)for i in range(-1, 2)])
                         pon.play()
+                        
+            #----------------------------------
+            #湯口------------------------------
             # 31イベントであったら
             if event.type == 31:
                 lene_flg = True # ラスボスを描画スタート
@@ -446,12 +447,16 @@ def main():
                     kkt.rct.center = scr.rct.width//5,scr.rct.height//2
 
             lene.update(scr)
+            #---------------------------------
 
-        kkt.update(scr)
+       
+        kkt.update(scr)# 天野
 
+        # 鈴木
         for heart in lif:
             heart.update(kkt,scr)
-
+            
+        # 天野、湯口---------------------
         for attack in atk: # attackはAttackクラスインスタンス
             attack.update(scr)
 
@@ -475,7 +480,9 @@ def main():
             if attack.rct.centerx >= 1550: # 卵が画面外へ移動した時
                 atk.remove(attack) # リストから卵を消す
 
+        #-----------------------------
 
+        #天野-------------------------------
         for enemy in ene: # enemyはEnemyクラスインスタンス
             enemy.update(scr) # 敵の更新
             if kkt.rct.colliderect(enemy.rct):
@@ -509,7 +516,7 @@ def main():
         for bomb in bkd: # bombはBombクラスインスタンス
             bomb.update(scr) # 爆弾の更新
 
-            if kkt.rct.colliderect(bomb.rct):
+            if kkt.rct.colliderect(bomb.rct):#鈴木
                 ene = []
                 bkd =[]
                 lif.pop()
@@ -536,22 +543,23 @@ def main():
                 pg.time.set_timer(26, 5000, 1) # 5秒後にイベント26を呼んで無制限モードを解除
                 itm.remove(item)
 
+        #----------------------------
+        # 鈴木----------------
         for heart in hrt: # heartはHEALクラスインスタンス
             heart.update(scr) 
             if heart.rct.right <= 0:
                 hrt.remove(heart)
                 continue
 
-            # ハートを取ったら全部消える
+            # ハートを取ったら回復
             if kkt.rct.colliderect(heart.rct):
-                ene.clear()
-                bkd.clear()
                 hrt.remove(heart)
                 if len(lif) < 3:
                     lif.append(Life("fig/heart.png",0.1,len(lif)+1))
                 continue
-
-        #スコアの表示        
+        #-----------------------------
+        
+        #スコアの表示(大橋)
         scr.sfc.blit(sc_txt(count),(1300,0))
 
         clock.tick(1000)
