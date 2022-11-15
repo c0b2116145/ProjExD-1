@@ -478,7 +478,7 @@ def main():
                         main()
                     return
 
-            if attack.rct.centerx >= 1550: # 卵が画面外へ移動した時
+            if attack.rct.left >= 1600: # 卵が画面外へ移動した時
                 atk.remove(attack) # リストから卵を消す
 
         #-----------------------------
@@ -488,8 +488,7 @@ def main():
             enemy.update(scr) # 敵の更新
             if kkt.rct.colliderect(enemy.rct):
                 # こうかとんが敵とぶつかった時の処理
-                ene = []
-                bkd =[]
+                ene.remove(enemy)
                 lif.pop()
                 if lif ==[]:
                     stage.fadeout()
@@ -518,8 +517,7 @@ def main():
             bomb.update(scr) # 爆弾の更新
 
             if kkt.rct.colliderect(bomb.rct):#鈴木
-                ene = []
-                bkd =[]
+                bkd.remove(bomb)
                 lif.pop()
                 if lif ==[]:
                     stage.fadeout()
